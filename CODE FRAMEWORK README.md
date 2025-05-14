@@ -105,7 +105,7 @@ Below you can find the Entity Relationship Diagram (ERD) which illustrates the d
 12. **AssignmentSectionCriteriaMapping** the mapping between the student's assignment and the criterias as explained above.
 13. **Grading** holds relevant information after the LLM graded the student's work like the overall score, general grade, how much compute tokens it took the LLM to grade and more.
 14. **CriteriaScore** this entity holds the relevant information for each criteria after the LLM finished grading.
-![Entity Relationship Diagram](diagrams\images\Database%20scheme%20and%20relationship%20diagram.png)
+![Entity Relationship Diagram](diagrams/images/Database%20scheme%20and%20relationship%20diagram.png)
 
 
 ### Assignment Creation Process
