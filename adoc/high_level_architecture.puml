@@ -1,0 +1,40 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+!include DEVICONS/react.puml
+!include DEVICONS/dotnet.puml
+!include DEVICONS/python.puml
+!include DEVICONS/msql_server.puml
+!include FONTAWESOME/server.puml
+!include FONTAWESOME/envelope.puml
+
+' LAYOUT_TOP_DOWN()
+' LAYOUT_AS_SKETCH()
+LAYOUT_WITH_LEGEND()
+
+title AI Grading System
+
+Person(teacher, Teacher, "A teacher that uses the AI grading system to assess student assignments")
+
+System_Boundary(c1, "AI Grading System") {
+    Container(backend, "Web Application", "Python, FastAPI", "Delivers to API calls from FE and orchestrates AI agents", "python")
+    Container(spa, "Single-Page App", "JavaScript, Angular", "Provides all the frontend functionality to teachers via their web browser", "react")
+    ContainerDb(database, "Database", "SQL Database", "Stores user registration information, hashed auth credentials, access logs, etc.", "mysql_server")
+    Container(llm, "Large Language Model", "ChatGpt, Claude, etc.", "Large Language Models used to make assignment evaluations", "server")
+}
+
+
+System_Ext(lms_system, "Learning Management System", "Used by Skills4Stem to track the progress of the students.")
+
+Rel(teacher, spa, "Uses", "HTTPS")
+
+Rel(spa, backend, "Uses", "async, JSON/HTTPS")
+Rel(backend, llm, "Uses", "async, JSON/HTTPS")
+Rel_Back_Neighbor(database, backend, "Reads from and writes to", "sync, JDBC")
+
+Rel(teacher, lms_system, "Gives assignments to students")
+Rel_Neighbor(backend, lms_system, "Uploads evaluation results", "sync/async, XML/HTTPS")
+@enduml

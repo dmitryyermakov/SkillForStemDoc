@@ -1,0 +1,20 @@
+@startuml
+actor Admin
+participant "AI Grading Platform" as Platform
+participant "Moodle LMS" as Moodle
+participant "AI Grader" as AI
+
+Admin -> Platform: Configure course ID and Assignment Name
+Platform -> Platform: Save assignment definition
+Platform -> Moodle: Poll for updates (core_course_get_updates_since)
+Platform <- Moodle: Return updates
+Platform -> Platform: Store last check timestamp
+Platform -> Moodle: Retrieve assignments (mod_assign_get_assignments)
+Platform <- Moodle: Return assignments
+Platform -> Platform: Filter assignments by Name
+Platform -> Moodle: Retrieve submissions for matching assignments
+Platform <- Moodle: Return submissions
+Platform -> AI: Send submissions for grading
+AI -> Platform: Return grades and feedback
+Platform -> Moodle: Store feedback files and grade (mod_assign_save_grade)
+@enduml

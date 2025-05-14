@@ -1,0 +1,861 @@
+openapi: 3.0.0
+info:
+  title: Skills4Stem AI Assignment Grading System API
+  version: 0.0.1
+  description: API for managing assignments, bibliography, learning objectives, criteria, sections, and section mappings in the Skills4Stem AI Assignment Grading System
+
+servers:
+  - url: https://api.skills4stem.com/v1
+    description: Production server
+
+paths:
+  /assignments:
+    get:
+      summary: Get all assignments
+      operationId: getAllAssignments
+      tags:
+        - Assignments
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of assignments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Assignment'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationInfo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    
+    post:
+      summary: Create a new assignment
+      operationId: createAssignment
+      tags:
+        - Assignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentInput'
+      responses:
+        '201':
+          description: Assignment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /assignments/{assignmentId}:
+    get:
+      summary: Get an assignment by ID
+      operationId: getAssignment
+      tags:
+        - Assignments
+      parameters:
+        - $ref: '#/components/parameters/assignmentId'
+      responses:
+        '200':
+          description: Assignment retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      summary: Update an existing assignment
+      operationId: updateAssignment
+      tags:
+        - Assignments
+      parameters:
+        - $ref: '#/components/parameters/assignmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentInput'
+      responses:
+        '200':
+          description: Assignment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete an assignment
+      operationId: deleteAssignment
+      tags:
+        - Assignments
+      parameters:
+        - $ref: '#/components/parameters/assignmentId'
+      responses:
+        '204':
+          description: Assignment deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /documents:
+    post:
+      summary: Upload a new document
+      operationId: uploadDocument
+      tags:
+        - Documents
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /documents/{documentId}:
+    get:
+      summary: Download a document
+      operationId: downloadDocument
+      tags:
+        - Documents
+      parameters:
+        - $ref: '#/components/parameters/documentId'
+      responses:
+        '200':
+          description: Document downloaded successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete a document
+      operationId: deleteDocument
+      tags:
+        - Documents
+      parameters:
+        - $ref: '#/components/parameters/documentId'
+      responses:
+        '204':
+          description: Document deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /sections:
+    get:
+      summary: Get all sections
+      operationId: getAllSections
+      tags:
+        - Sections
+      parameters:
+        - name: documentId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Sections retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Section'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    post:
+      summary: Create a new section
+      operationId: createSection
+      tags:
+        - Sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionInput'
+      responses:
+        '201':
+          description: Section created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /sections/{sectionId}:
+    get:
+      summary: Get a specific section
+      operationId: getSection
+      tags:
+        - Sections
+      parameters:
+        - $ref: '#/components/parameters/sectionId'
+      responses:
+        '200':
+          description: Section retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Update a section
+      operationId: updateSection
+      tags:
+        - Sections
+      parameters:
+        - $ref: '#/components/parameters/sectionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionInput'
+      responses:
+        '200':
+          description: Section updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete a section
+      operationId: deleteSection
+      tags:
+        - Sections
+      parameters:
+        - $ref: '#/components/parameters/sectionId'
+      responses:
+        '204':
+          description: Section deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /section-mappings:
+    get:
+      summary: Get all section mappings
+      operationId: getAllSectionMappings
+      tags:
+        - Section Mappings
+      parameters:
+        - name: assignmentId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Section mappings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SectionMapping'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    post:
+      summary: Create a new section mapping
+      operationId: createSectionMapping
+      tags:
+        - Section Mappings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionMappingInput'
+      responses:
+        '201':
+          description: Section mapping created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionMapping'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /section-mappings/{mappingId}:
+    get:
+      summary: Get a specific section mapping
+      operationId: getSectionMapping
+      tags:
+        - Section Mappings
+      parameters:
+        - $ref: '#/components/parameters/mappingId'
+      responses:
+        '200':
+          description: Section mapping retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionMapping'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Update a section mapping
+      operationId: updateSectionMapping
+      tags:
+        - Section Mappings
+      parameters:
+        - $ref: '#/components/parameters/mappingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionMappingInput'
+      responses:
+        '200':
+          description: Section mapping updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionMapping'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete a section mapping
+      operationId: deleteSectionMapping
+      tags:
+        - Section Mappings
+      parameters:
+        - $ref: '#/components/parameters/mappingId'
+      responses:
+        '204':
+          description: Section mapping deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /gradings:
+    get:
+      summary: Get all gradings
+      operationId: getAllGradings
+      tags:
+        - Gradings
+      parameters:
+        - name: assignmentId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of gradings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Grading'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationInfo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    
+    post:
+      summary: Create a new grading
+      operationId: createGrading
+      tags:
+        - Gradings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradingInput'
+      responses:
+        '201':
+          description: Grading created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grading'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /gradings/{gradingId}:
+    get:
+      summary: Get a grading by ID
+      operationId: getGrading
+      tags:
+        - Gradings
+      parameters:
+        - $ref: '#/components/parameters/gradingId'
+      responses:
+        '200':
+          description: Grading retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grading'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      summary: Update an existing grading
+      operationId: updateGrading
+      tags:
+        - Gradings
+      parameters:
+        - $ref: '#/components/parameters/gradingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradingInput'
+      responses:
+        '200':
+          description: Grading updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grading'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete a grading
+      operationId: deleteGrading
+      tags:
+        - Gradings
+      parameters:
+        - $ref: '#/components/parameters/gradingId'
+      responses:
+        '204':
+          description: Grading deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /gradings/{gradingId}/review:
+    post:
+      summary: Submit a review for a grading
+      operationId: submitGradingReview
+      tags:
+        - Gradings
+      parameters:
+        - $ref: '#/components/parameters/gradingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradingReviewInput'
+      responses:
+        '200':
+          description: Grading review submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grading'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, MAPPED, READY]
+        assignmentText:
+          type: string
+        bibliography:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        learningObjectives:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningObjective'
+
+    AssignmentInput:
+      type: object
+      required:
+        - assignmentText
+      properties:
+        assignmentText:
+          type: string
+        bibliographyIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        learningObjectives:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningObjectiveInput'
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        contentUrl:
+          type: string
+          format: uri
+          description: URL to download the binary content of the document
+
+    LearningObjective:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        criteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/Criterion'
+
+    LearningObjectiveInput:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+        criteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionInput'
+
+    Criterion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+
+    CriterionInput:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        documentId:
+          type: string
+          format: uuid
+        startOffset:
+          type: integer
+        endOffset:
+          type: integer
+        text:
+          type: string
+
+    SectionInput:
+      type: object
+      required:
+        - documentId
+        - startOffset
+        - endOffset
+        - text
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        startOffset:
+          type: integer
+        endOffset:
+          type: integer
+        text:
+          type: string
+
+    SectionMapping:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sectionId:
+          type: string
+          format: uuid
+        criterionId:
+          type: string
+          format: uuid
+        assignmentId:
+          type: string
+          format: uuid
+
+    SectionMappingInput:
+      type: object
+      required:
+        - sectionId
+        - criterionId
+        - assignmentId
+        
+      properties:
+        sectionId:
+          type: string
+          format: uuid
+        criterionId:
+          type: string
+          format: uuid
+        assignmentId:
+          type: string
+          format: uuid
+          
+    Grading:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        assignmentId:
+          type: string
+          format: uuid
+        studentId:
+          type: string
+          format: uuid
+        overallScore:
+          type: number
+        criteriaScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionScore'
+        aiComments:
+          type: string
+        teacherComments:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, AI_GRADED, TEACHER_REVIEWED]
+
+    GradingInput:
+      type: object
+      required:
+        - assignmentId
+        - studentId
+      properties:
+        assignmentId:
+          type: string
+          format: uuid
+        studentId:
+          type: string
+          format: uuid
+        overallScore:
+          type: number
+        criteriaScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionScoreInput'
+        aiComments:
+          type: string
+
+    CriterionScore:
+      type: object
+      properties:
+        criterionId:
+          type: string
+          format: uuid
+        score:
+          type: number
+        aiComments:
+          type: string
+        teacherComments:
+          type: string
+
+    CriterionScoreInput:
+      type: object
+      required:
+        - criterionId
+        - score
+      properties:
+        criterionId:
+          type: string
+          format: uuid
+        score:
+          type: number
+
+    GradingReviewInput:
+      type: object
+      required:
+        - overallScore
+        - criteriaScores
+        - teacherComments
+      properties:
+        overallScore:
+          type: number
+        criteriaScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionScoreInput'
+        teacherComments:
+          type: string
+
+    PaginationInfo:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        limit:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+  parameters:
+    assignmentId:
+      name: assignmentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    
+    documentId:
+      name: documentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    sectionId:
+      name: sectionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    mappingId:
+      name: mappingId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        
+    gradingId:
+      name: gradingId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - BearerAuth: []

@@ -1,0 +1,65 @@
+@startuml
+actor "Assignment Creator" as AC
+participant "GUI" as GUI
+participant "Backend API" as API
+participant "Section Mapping Service" as SMS
+participant "LLM" as LLM
+database "Database" as DB
+
+
+AC -> API: Create/Update Assignment
+activate API
+
+API -> SMS: Trigger Section Mapping
+activate SMS
+
+loop For each document in bibliography
+    SMS -> LLM: Split document into sections
+    activate LLM
+    LLM --> SMS: Return sections
+    deactivate LLM
+    
+    SMS -> DB: Store sections
+    activate DB
+    DB --> SMS: Confirm storage
+    deactivate DB
+    
+    loop For each criteria in assignment
+        SMS -> LLM: Identify relevant sections for criteria
+        activate LLM
+        LLM --> SMS: Return relevant sections
+        deactivate LLM
+        
+        SMS -> DB: Store section-criteria links
+        activate DB
+        DB --> SMS: Confirm storage
+        deactivate DB
+    end
+end
+
+SMS --> API: Mapping complete
+deactivate SMS
+
+API --> AC: Assignment created/updated
+deactivate API
+
+AC -> GUI: Access mapping review interface
+activate GUI
+
+GUI -> DB: Fetch current mappings
+activate DB
+DB --> GUI: Return mappings
+deactivate DB
+
+GUI --> AC: Display mappings
+
+AC -> GUI: Finalize mappings
+GUI -> DB: Save final mappings
+activate DB
+DB --> GUI: Confirm final save
+deactivate DB
+GUI --> AC: Confirm mappings finalized
+
+deactivate GUI
+
+@enduml

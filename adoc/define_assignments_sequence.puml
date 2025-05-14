@@ -1,0 +1,34 @@
+@startuml
+actor Teacher
+participant "Frontend" as FE
+participant "Backend" as BE
+database "Database" as DB
+
+Teacher -> FE: Access assignment creation page
+FE -> BE: Request assignment form
+BE --> FE: Return assignment form
+FE --> Teacher: Display assignment form
+
+Teacher -> FE: Enter assignment details\n(Bibliography, Assignment Text, Learning Objectives, Criteria)
+FE -> BE: Submit assignment data
+BE -> DB: Store assignment data with status "PENDING"
+DB --> BE: Confirm storage
+BE --> FE: Confirm assignment creation (status: PENDING)
+FE --> Teacher: Display confirmation message\n(Assignment created, mapping in progress)
+
+BE -> BE: Perform automated mapping
+BE -> DB: Update assignment status to "MAPPED"
+DB --> BE: Confirm update
+BE --> FE: Notify mapping completion
+FE --> Teacher: Display mapping completion message
+
+Teacher -> FE: Review and adjust mapping (if necessary)
+FE -> BE: Submit mapping adjustments
+BE -> DB: Update final mapping
+DB --> BE: Confirm update
+BE -> DB: Update assignment status to "READY"
+DB --> BE: Confirm status update
+BE --> FE: Confirm assignment is ready
+FE --> Teacher: Display "Assignment Ready" message
+
+@enduml

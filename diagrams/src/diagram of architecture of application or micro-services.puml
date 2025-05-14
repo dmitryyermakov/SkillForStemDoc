@@ -1,0 +1,24 @@
+@startuml
+
+skinparam linetype ortho
+
+actor User as user
+
+package "Azure Components" {
+    
+    [Frontend Web Application] as frontend
+    [Container App] as backend
+    [Azure Database for PostgreSQL] as database
+    [Azure OpenAI Service] as openAI
+    [Azure Storage Account] as storage
+    
+    user --> frontend : Uses
+    
+    frontend <-- backend : Communicates with
+    
+    backend --> database : Queries
+    backend --> openAI : Connects to
+    backend --> storage : Reads/Writes
+}
+
+@enduml

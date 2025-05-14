@@ -1,0 +1,33 @@
+@startuml
+
+package "Custom Gen AI Application for Student Assignments Assessments" {
+    
+    rectangle "Custom WebGui" as WebGui {
+        note right: Teachers upload student papers and receive assessments
+    }
+    
+    package "Ingestion Component" as Ingestion {
+        note right: Takes bibliography, splits into sections, maps to evaluation criteria, stores in PostgreSQL DB
+    }
+    
+    package "Orchestrator (Python Application in Docker)" as Orchestrator {
+        note right: Retrieves sections and criteria from DB, performs assessments using LLM, returns results in JSON
+    }
+    
+    database "PostgreSQL DB" as DB {
+        note right: Stores sections, mappings, and future assessments results
+    }
+    
+    rectangle "Configurable LLM" as LLM {
+        note right: Used by Orchestrator for assessments (ChatGPT 4 / Claude Sonnet 3.5)
+    }
+    
+    WebGui -down-> Ingestion: Upload paper
+    Ingestion -down-> DB: Store sections and criteria
+    Orchestrator -down-> DB: Retrieve sections and criteria
+    Orchestrator -down-> LLM: Perform assessment
+    Orchestrator -down-> WebGui: Return assessment in JSON
+    
+}
+
+@enduml

@@ -1,0 +1,149 @@
+@startuml
+
+entity AssignmentDefinition {
+  * id
+  * title
+  * unit_number
+  * academic_year
+  * description
+  * moodle_id
+  --
+  + Parts
+  + LearningObjectives
+  + Documents
+  + Assignments
+  + SectionCriteriaMappings
+}
+
+entity Part {
+  * id
+  * name
+  * summary
+  * assignment_definition_id
+}
+
+entity PartSection {
+  * id
+  * name
+  * description
+  * part_id
+}
+
+entity LearningObjective {
+  * id
+  * name
+  * description
+  * assignment_definition_id
+}
+
+entity Criteria {
+  * id
+  * name
+  * description
+  * type
+}
+
+entity CriteriaScore {
+  * id
+  * criteria_id
+  * grading_id
+  * score
+  * comment
+}
+
+entity Document {
+  * id
+  * file_name
+  * content_url
+  * assignment_definition_id
+  * sections_mapping_status
+}
+
+entity Section {
+  * id
+  * document_id
+  * start_offset
+  * end_offset
+  * section_text
+}
+
+entity SectionCriteriaMapping {
+  * id
+  * section_id
+  * criteria_id
+  * document_id
+  * assignment_definition_id
+}
+
+entity Assignment {
+  * id
+  * student_id
+  * assignment_definition_id
+  * url
+  * submission_date
+}
+
+entity AssignmentSection {
+  * id
+  * assignment_id
+  * start_offset
+  * end_offset
+  * assignment_section_text
+}
+
+entity AssignmentSectionCriteriaMapping {
+  * id
+  * assignment_section_id
+  * criteria_id
+  * assignment_id
+}
+
+entity Grading {
+  * id
+  * assignment_id
+  * student_id
+  * overall_score
+  * ai_comments
+  * teacher_comments
+  * grading_status
+  * input_tokens
+  * output_tokens
+  * general_grade
+}
+
+entity Student {
+  * id
+  * student_name
+  * assignment_count
+  * email
+  * moodle_user_id
+}
+
+AssignmentDefinition --> Part
+PartSection --> Part
+Part --> LearningObjective : many-to-many
+LearningObjective --> AssignmentDefinition
+LearningObjective --> Criteria : many-to-many
+Criteria --> CriteriaScore
+Criteria --> SectionCriteriaMapping
+Criteria --> AssignmentSectionCriteriaMapping
+Document --> AssignmentDefinition
+Document --> Section
+Section --> SectionCriteriaMapping
+Section --> AssignmentSectionCriteriaMapping : many-to-many
+Assignment --> Student
+Assignment --> AssignmentDefinition
+Assignment --> AssignmentSection
+Assignment --> Grading
+Assignment--> AssignmentSectionCriteriaMapping
+AssignmentSection --> Assignment
+AssignmentSection --> AssignmentSectionCriteriaMapping
+AssignmentSectionCriteriaMapping --> AssignmentSection
+AssignmentSectionCriteriaMapping --> Assignment
+Grading --> Assignment
+Grading --> Student
+Grading --> CriteriaScore
+Student --> Assignment
+Student --> Grading
+
+@enduml
