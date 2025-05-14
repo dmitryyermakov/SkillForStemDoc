@@ -81,7 +81,7 @@ The architecture diagram below displays the architecture of the Custom Gen AI Ap
    - Utilized by the orchestrator to perform assessments with advanced AI capabilities, such as those provided by ChatGPT 4 and Claude Sonnet 3.5.
    - Assesses student papers against predefined criteria, generating intelligent, objective feedback and scores.
 
-![Architecture](diagrams\images\architecture.png)
+![Architecture](diagrams/images/architecture.png)
 
 ## Diagram Images and Descriptions
 
@@ -134,7 +134,7 @@ The assignment creation process diagram illustrates the workflow involved in cre
 4. **Database**
    - Serves as the central repository for storing assignment data and mapping statuses.
    - Supports fetching and updating of assignment information throughout the workflow.
-![Assignment Creation Process](diagrams\images\define_assignments_sequence.png)
+![Assignment Creation Process](diagrams/images/define_assignments_sequence.png)
 
 ### Azure Components Functional Diagram
 
@@ -166,7 +166,7 @@ Below you will find the functional diagram which provides an overview of the Azu
    - Facilitates storage and management of files and media assets related to assignments, submissions, and resources.
    - The Container App reads from and writes data to the storage account, managing file operations and ensuring data integrity.
 
-![Azure Components Functional Diagram](diagrams\images\diagram%20of%20architecture%20of%20application%20or%20micro-services.png)
+![Azure Components Functional Diagram](diagrams/images/diagram%20of%20architecture%20of%20application%20or%20micro-services.png)
 
 
 ### AI Grading System Overview
@@ -208,7 +208,7 @@ This high-level architectural diagram illustrates the flow of data and interacti
 - **Container**: Signifies software components encapsulating different functionalities.
 - **External Person/System**: Identifies external users and services interfacing with the AI Grading System.
 
-![AI Grading System Overview](diagrams\images\high_level_architecture.png)
+![AI Grading System Overview](diagrams/images/high_level_architecture.png)
 
 
 ### Moodle LMS Integration Process
@@ -238,7 +238,7 @@ This sequence diagram illustrates the steps involved in integrating the Moodle L
    - Processes received submissions and generates grades and feedback using AI models.
    - Ensures accurate and objective evaluation of student work based on predefined criteria.
 
-![Moodle LMS Integration Process](diagrams\images\moodle_integration.png)
+![Moodle LMS Integration Process](diagrams/images/moodle_integration.png)
 
 
 ### Automated Section Mapping
@@ -274,7 +274,7 @@ sequence diagram illustrates the automated section mapping process within the AI
    - Enhances the accuracy and relevance of section mappings by leveraging AI capabilities to analyze document content.
 
 
-![Automated Section Mapping](diagrams\images\bibliography_section_mapping.png)
+![Automated Section Mapping](diagrams/images/bibliography_section_mapping.png)
 
 
 ## Documentation
